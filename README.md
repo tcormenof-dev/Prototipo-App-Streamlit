@@ -48,7 +48,9 @@ cd prototipo-streamlit
 
 ## Se recomienda crear un entorno
 python -m venv venv
+
 source venv/bin/activate  # En Windows: venv\Scripts\activate
+
 pip install -r reqs.txt
 
 ## Para ejecutar un el app
