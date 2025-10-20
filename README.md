@@ -23,7 +23,7 @@ Sirve como prototipo académico o base para futuros desarrollos analíticos con 
 ---
 
 ## Estructura del proyecto
-prototipo_streamlit/
+Prototipo-App-Streamlit/
 
 │
 
@@ -43,8 +43,9 @@ prototipo_streamlit/
 
 
 ## Para la ejecución:
-git clone https://github.com/usuario/prototipo-streamlit.git
-cd prototipo-streamlit
+git clone https://github.com/usuario/prototipo-streamlit.git](https://github.com/tcormenof-dev/Prototipo-App-Streamlit
+
+cd Prototipo-App-Streamlit
 
 ## Se recomienda crear un entorno
 python -m venv venv
@@ -67,6 +68,7 @@ Gráficos interactivos según la columna o agrupación seleccionada.
 
 ## Decoradores y rendimiento
 El proyecto usa un decorador personalizado @log_timing (definido en utils.py) para medir el tiempo de ejecución de cada función clave y mostrarlo en consola.
+
 Cada función también está cacheada con @st.cache_data(show_spinner=False) para mejorar el rendimiento en Streamlit.
 
 ## Dependencias principales
