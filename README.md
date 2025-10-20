@@ -43,7 +43,7 @@ Prototipo-App-Streamlit/
 
 
 ## Para la ejecución:
-git clone https://github.com/usuario/prototipo-streamlit.git](https://github.com/tcormenof-dev/Prototipo-App-Streamlit
+git clone https://tcormenof-dev/Prototipo-App-Streamlit
 
 cd Prototipo-App-Streamlit
 
