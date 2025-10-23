@@ -1,14 +1,13 @@
 # Prototipo-App-Streamlit
 # Prototipo Streamlit – Análisis y Visualización de Datos
 
-Este proyecto es un **dashboard interactivo en Streamlit** que permite **cargar, limpiar, explorar y visualizar datos** desde archivos CSV.  
+Este proyecto es un **dashboard interactivo en Streamlit** que permite **limpiar, explorar y visualizar datos** desde archivos CSV en línea.  
 Sirve como prototipo académico o base para futuros desarrollos analíticos con `pandas` y `Altair`.
 
 ---
 
 ## Características principales
 
-- **Carga flexible de CSVs** (desde archivo, ruta o buffer).  
 - **Limpieza automática**: normaliza strings, detecta tipos numéricos y elimina duplicados.  
 - **Análisis rápido**:
   - Resumen de valores faltantes.  
@@ -58,8 +57,6 @@ pip install -r reqs.txt
 streamlit run app.py
 
 # Uso:
-Carga uno o más archivos CSV desde la barra lateral.
-Ajusta el separador (sep) y encoding si es necesario.
 Visualiza:
 Vista previa de los datos crudos.
 Tabla limpia con limpieza aplicada.
