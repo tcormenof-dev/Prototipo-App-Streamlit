@@ -7,14 +7,14 @@ El proyecto está optimizado para trabajar con datasets grandes, usando **SQLite
 
 ## 🚀 Características principales
 
-### 🧱 Arquitectura y rendimiento
+### Arquitectura y rendimiento
 - **Carga flexible** de datos (`.xlsx` o `.csv`) desde archivo local o URL.
 - **ETL cacheado en SQLite**: los datos crudos se normalizan en una tabla “larga” (`coverage_long`) con índices (`tech`, `CentroPoblado`, `Ambito`).
 - **Consultas SQL directas** (`SELECT ... WHERE tech = ?`) para cada visualización.
 - **Caching inteligente** con `@st.cache_data` y `@st.cache_resource`.
 - **Modo persistente WAL** en SQLite para lecturas rápidas.
 
-### 📊 Visualizaciones interactivas
+### Visualizaciones interactivas
 - **Mapa de cobertura** por tecnología (2G, 3G, 4G, 5G) con Pydeck (colores según intensidad de cobertura).
 - **Estadísticas generales** de cobertura por tecnología (media, mediana, máximo, mínimo).
 - **Comparación por Centro Poblado**:
@@ -22,7 +22,7 @@ El proyecto está optimizado para trabajar con datasets grandes, usando **SQLite
   - Calcula estadísticas agregadas entre todos los seleccionados.
   - Opción para mostrar detalle de filas utilizadas.
 
-### 💅 Interfaz y usabilidad
+### Interfaz y usabilidad
 - Limpieza automática de nombres (`_pretty_cp`) → convierte etiquetas como `06_de_agosto` → `06 de agosto`.
 - Sidebar de configuración: carga de datos, parámetros de rendimiento, opciones de visualización.
 - Etiquetas y tooltips en español, UI responsiva y clara.
@@ -42,7 +42,7 @@ El proyecto está optimizado para trabajar con datasets grandes, usando **SQLite
 
 ---
 
-## ⚙️ Instalación y ejecución
+## ⚙️ Instalación y ejecución (desde el cmd)
 ### 1️⃣ Clonar el repositorio
 git clone https://github.com/tcormenof-dev/Prototipo-App-Streamlit.git
 
