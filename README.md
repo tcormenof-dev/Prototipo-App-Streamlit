@@ -1,76 +1,115 @@
-# Prototipo-App-Streamlit
-# Prototipo Streamlit – Análisis y Visualización de Datos
+# 📡 Dashboard de Cobertura Móvil (Perú)
 
-Este proyecto es un **dashboard interactivo en Streamlit** que permite **limpiar, explorar y visualizar datos** desde archivos CSV en línea.  
-Sirve como prototipo académico o base para futuros desarrollos analíticos con `pandas` y `Altair`.
-
----
-
-## Características principales
-
-- **Limpieza automática**: normaliza strings, detecta tipos numéricos y elimina duplicados.  
-- **Análisis rápido**:
-  - Resumen de valores faltantes.  
-  - Métricas descriptivas (filas, columnas, estadísticas).  
-- **Visualización interactiva**:
-  - Histogramas, barras y líneas por columna.  
-  - Gráficos de barras agrupadas con agregaciones (`count`, `sum`, `mean`, `median`).  
-- **Optimización de rendimiento**:  
-  - Decoradores personalizados (`@log_timing`) para medir tiempos.  
-  - Caché de Streamlit (`@st.cache_data`) para evitar recálculos innecesarios.  
+Aplicación interactiva en **Streamlit** que permite visualizar, explorar y analizar la **cobertura móvil** por tecnología (2G, 3G, 4G, 5G) a nivel de centros poblados.  
+El proyecto está optimizado para trabajar con datasets grandes, usando **SQLite como cache** y consultas SQL dinámicas para mantener un rendimiento fluido incluso con archivos extensos.
 
 ---
 
-## Estructura del proyecto
-Prototipo-App-Streamlit/
+## 🚀 Características principales
 
-│
+### 🧱 Arquitectura y rendimiento
+- **Carga flexible** de datos (`.xlsx` o `.csv`) desde archivo local o URL.
+- **ETL cacheado en SQLite**: los datos crudos se normalizan en una tabla “larga” (`coverage_long`) con índices (`tech`, `CentroPoblado`, `Ambito`).
+- **Consultas SQL directas** (`SELECT ... WHERE tech = ?`) para cada visualización.
+- **Caching inteligente** con `@st.cache_data` y `@st.cache_resource`.
+- **Modo persistente WAL** en SQLite para lecturas rápidas.
 
-├── app.py               # Script principal de Streamlit (interfaz y flujo general) 
+### 📊 Visualizaciones interactivas
+- **Mapa de cobertura** por tecnología (2G, 3G, 4G, 5G) con Pydeck (colores según intensidad de cobertura).
+- **Estadísticas generales** de cobertura por tecnología (media, mediana, máximo, mínimo).
+- **Comparación por Centro Poblado**:
+  - Soporta **multiselección** de CPs.
+  - Calcula estadísticas agregadas entre todos los seleccionados.
+  - Opción para mostrar detalle de filas utilizadas.
 
-├── load_data.py         # Funciones para leer CSVs de distintas fuentes 
+### 💅 Interfaz y usabilidad
+- Limpieza automática de nombres (`_pretty_cp`) → convierte etiquetas como `06_de_agosto` → `06 de agosto`.
+- Sidebar de configuración: carga de datos, parámetros de rendimiento, opciones de visualización.
+- Etiquetas y tooltips en español, UI responsiva y clara.
 
-├── processing.py        # Limpieza y análisis básico del DataFrame 
+---
 
-├── viz.py               # Gráficos interactivos con Altair 
+## 🗂️ Estructura del proyecto
 
-├── utils.py             # Decoradores y utilidades (logging, timing) 
+#### ├── app.py # App principal de Streamlit (interfaz + visualizaciones)
+#### ├── load_data.py # Lectura, cache y consultas SQL
+#### ├── processing.py # Limpieza y preprocesamiento (custom del usuario)
+#### ├── viz.py # Funciones auxiliares de visualización (Pydeck)
+#### ├── utils.py # Decoradores y helpers generales
+#### ├── data/
+#### │ └── coverage.db # Cache SQLite autogenerada
+#### └── reqs.txt # Dependencias del proyecto
 
-├── reqs.txt             # Dependencias del entorno 
+---
 
-└── README.md            # Documentación del proyecto
+## ⚙️ Instalación y ejecución
+### 1️⃣ Clonar el repositorio
+git clone https://github.com/<tu-usuario>/<tu-repo>.git
+cd <tu-repo>
+### 2️⃣ Crear entorno virtual (recomendado)
+python -m venv .ven
+source .venv/bin/activate  # En Windows: .venv\Scripts\activate
+### 3️⃣ Instalar dependencias
+pip install -r requirements.txt
 
+Dependencias principales:
 
-## Para la ejecución:
-git clone https://tcormenof-dev/Prototipo-App-Streamlit
+streamlit
 
-cd Prototipo-App-Streamlit
+pandas
 
-## Se recomienda crear un entorno
-python -m venv venv
+altair
 
-source venv/bin/activate  # En Windows: venv\Scripts\activate
+pydeck
 
-pip install -r reqs.txt
+requests
 
-## Para ejecutar un el app
+sqlite3 (builtin)
+
+### 4️⃣ Ejecutar el dashboard
 streamlit run app.py
 
-# Uso:
-Visualiza:
-Vista previa de los datos crudos.
-Tabla limpia con limpieza aplicada.
-Métricas y valores faltantes.
-Gráficos interactivos según la columna o agrupación seleccionada.
+## 🧠 Cómo funciona internamente
 
-## Decoradores y rendimiento
-El proyecto usa un decorador personalizado @log_timing (definido en utils.py) para medir el tiempo de ejecución de cada función clave y mostrarlo en consola.
+Lectura flexible (load_data.read_data_flexible)
 
-Cada función también está cacheada con @st.cache_data(show_spinner=False) para mejorar el rendimiento en Streamlit.
+Acepta .xlsx o .csv desde URL o ruta local.
 
-## Dependencias principales
-pandas>=2.0.0 
-numpy>=1.24.0 
-streamlit>=1.37.0 
-pyarrow>=14.0.0 
-pytest>=7.4.0
+Si es URL, se descarga con cabecera User-Agent para evitar error 418.
+
+Convierte automáticamente columnas como CentroPoblado a texto.
+
+Construcción del cache SQL (build_sql_cache_long)
+
+Normaliza los datos: columnas _CG y _CG+CAR → % cobertura por tecnología.
+
+Genera una tabla larga:
+CentroPoblado | Latitud | Longitud | Ambito | tech | pct
+
+Crea índices para consultas rápidas.
+
+Consultas y visualizaciones
+
+q_map_by_tech: puntos del mapa filtrados por tecnología.
+
+q_values_by_tech: valores por tecnología (para estadísticas globales).
+
+q_values_by_cps: datos filtrados por varios CPs (para análisis agregados).
+
+## 🧩 Personalización
+
+Puedes modificar processing.py para definir tu propia función clean_df(df) si tu dataset requiere limpieza adicional.
+
+Si tu archivo tiene otros nombres de columnas, ajusta los “id columns” en build_sql_cache_long.
+
+Para datasets más grandes, puedes reemplazar SQLite por DuckDB sin cambiar la lógica SQL.
+
+## 🛠️ Autor y créditos
+
+Autor: @<tcormenof-dev>
+Colaboración IA: ChatGPT (GPT-5)
+Institución: Universidad de Pacífico — Proyecto de análisis de datos y automatización.
+
+## 📜 Licencia
+
+Este proyecto se distribuye bajo licencia MIT, por lo que puedes modificarlo y reutilizarlo libremente citando la fuente.
