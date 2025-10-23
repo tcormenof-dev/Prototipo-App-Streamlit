@@ -42,7 +42,7 @@ El proyecto está optimizado para trabajar con datasets grandes, usando **SQLite
 
 ---
 
-## ⚙️ Instalación y ejecución (desde el cmd)
+## ⚙️ Instalación y ejecución (desde git)
 ### 1️⃣ Clonar el repositorio
 git clone https://github.com/tcormenof-dev/Prototipo-App-Streamlit.git
 
