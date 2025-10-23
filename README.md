@@ -45,9 +45,11 @@ El proyecto está optimizado para trabajar con datasets grandes, usando **SQLite
 ## ⚙️ Instalación y ejecución
 ### 1️⃣ Clonar el repositorio
 git clone https://github.com/tcormenof-dev/Prototipo-App-Streamlit.git
-cd <tu-repo>
+
+cd Prototipo-App-Streamlit.git
 ### 2️⃣ Crear entorno virtual (recomendado)
 python -m venv .ven
+
 source .venv/bin/activate  # En Windows: .venv\Scripts\activate
 ### 3️⃣ Instalar dependencias
 pip install -r requirements.txt
