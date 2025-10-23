@@ -50,23 +50,9 @@ cd Prototipo-App-Streamlit
 ### 2️⃣ Crear entorno virtual (recomendado)
 python -m venv .ven
 
-source .ven/bin/activate  # En Windows: .ven\Scripts\activate
+.ven\Scripts\activate
 ### 3️⃣ Instalar dependencias
 pip install -r reqs.txt
-
-Dependencias principales:
-
-streamlit
-
-pandas
-
-altair
-
-pydeck
-
-requests
-
-sqlite3 (builtin)
 
 ### 4️⃣ Ejecutar el dashboard
 streamlit run app.py
