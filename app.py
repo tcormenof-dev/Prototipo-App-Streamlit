@@ -108,7 +108,7 @@ except Exception as e:
 alt.data_transformers.disable_max_rows()
 
 # --------------------------------
-# Auditoría rápida (opcional)
+# Auditoría rápida 
 # --------------------------------
 with st.expander("Vista previa y descriptivos (auditoría)"):
     st.write("**Preview (10 filas)**")
@@ -206,49 +206,71 @@ if rows:
 else:
     st.info("No se pudieron calcular estadísticas generales.")
 
+
 # --------------------------------
 # Cobertura por Centro Poblado (SQL)
 # --------------------------------
-st.subheader("Cobertura por Centro Poblado")
-centros = q_centros()
-if not centros:
-    st.warning("No hay Centros Poblados en la base.")
+
+# Filtrar por Departamento y Provincia
+st.subheader("Filtrar por Departamento y Provincia")
+
+departamento = st.selectbox("Selecciona un Departamento", options=cl_df["Departamento"].unique())
+provincia = st.selectbox("Selecciona una Provincia", options=cl_df[cl_df["Departamento"] == departamento]["Provincia"].unique())
+
+# Filtrar dataframe por departamento y provincia
+filtered_df = cl_df[(cl_df["Departamento"] == departamento) & (cl_df["Provincia"] == provincia)]
+
+# Visualización de la cobertura
+if not filtered_df.empty:
+    st.write(f"Datos filtrados para {departamento} - {provincia}")
+    st.dataframe(filtered_df)
 else:
-    cps = st.multiselect("Selecciona uno o varios Centros Poblados", options=centros, format_func=_pretty_cp)
-    agg_metric = st.radio("Estadística", ["Media","Mediana","Máximo","Mínimo"], horizontal=True)
+    st.warning(f"No se encontraron datos para {departamento} - {provincia}.")
 
-    if cps:
-        if len(cps) == 1:
-            cp_df = q_values_by_cp(cps[0])
-        else:
-            cp_df = q_values_by_cps(cps)
+# Ahora filtra los Centros Poblados según el Departamento y la Provincia seleccionados
+centros_filtrados = filtered_df["CentroPoblado"].unique()
 
-        if cp_df.empty:
-            st.warning("Sin datos para los CP seleccionados.")
-        else:
-            cp_df["pct"] = pd.to_numeric(cp_df["pct"], errors="coerce")
-            grp = cp_df.groupby("tech")["pct"]
-            agg_map = {
-                "Media": grp.mean(),
-                "Mediana": grp.median(),
-                "Máximo": grp.max(),
-                "Mínimo": grp.min(),
-            }
-            show = agg_map[agg_metric].reset_index().rename(columns={"tech":"Tecnología", "pct": agg_metric})
-            titulo_suffix = f"en {len(cps)} centro(s) poblado(s) seleccionado(s)"
-            chart = (
-                alt.Chart(show)
-                .mark_bar()
-                .encode(
-                    x=alt.X("Tecnología:N", title="Tecnología"),
-                    y=alt.Y(f"{agg_metric}:Q", title=f"{agg_metric} de Cobertura (%)"),
-                    tooltip=["Tecnología", alt.Tooltip(agg_metric, format=".2f")]
-                )
-                .properties(title=f"{agg_metric} por tecnología {titulo_suffix}", height=300)
-            ).interactive()
-            st.altair_chart(chart, use_container_width=True)
+# Actualiza el multiselect para que muestre solo los Centros Poblados filtrados
+cps = st.multiselect(
+    "Selecciona uno o varios Centros Poblados",
+    options=centros_filtrados,
+    format_func=_pretty_cp
+)
 
-            with st.expander("Ver detalle (filas utilizadas)"):
-                if "CentroPoblado" in cp_df.columns:
-                    cp_df = cp_df.assign(CentroPobladoPretty=cp_df["CentroPoblado"].apply(_pretty_cp))
-                st.dataframe(cp_df, use_container_width=True)
+# Lógica adicional que usarás para procesar los Centros Poblados seleccionados...
+agg_metric = st.radio("Estadística", ["Media","Mediana","Máximo","Mínimo"], horizontal=True)
+if cps:
+    if len(cps) == 1:
+        cp_df = q_values_by_cp(cps[0])
+    else:
+        cp_df = q_values_by_cps(cps)
+
+    if cp_df.empty:
+        st.warning("Sin datos para los CP seleccionados.")
+    else:
+        cp_df["pct"] = pd.to_numeric(cp_df["pct"], errors="coerce")
+        grp = cp_df.groupby("tech")["pct"]
+        agg_map = {
+            "Media": grp.mean(),
+            "Mediana": grp.median(),
+            "Máximo": grp.max(),
+            "Mínimo": grp.min(),
+        }
+        show = agg_map[agg_metric].reset_index().rename(columns={"tech":"Tecnología", "pct": agg_metric})
+        titulo_suffix = f"en {len(cps)} centro(s) poblado(s) seleccionado(s)"
+        chart = (
+            alt.Chart(show)
+            .mark_bar()
+            .encode(
+                x=alt.X("Tecnología:N", title="Tecnología"),
+                y=alt.Y(f"{agg_metric}:Q", title=f"{agg_metric} de Cobertura (%)"),
+                tooltip=["Tecnología", alt.Tooltip(agg_metric, format=".2f")]
+            )
+            .properties(title=f"{agg_metric} por tecnología {titulo_suffix}", height=300)
+        ).interactive()
+        st.altair_chart(chart, use_container_width=True)
+
+        with st.expander("Ver detalle (filas utilizadas)"):
+            if "CentroPoblado" in cp_df.columns:
+                cp_df = cp_df.assign(CentroPobladoPretty=cp_df["CentroPoblado"].apply(_pretty_cp))
+            st.dataframe(cp_df, use_container_width=True)
